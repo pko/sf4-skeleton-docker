@@ -17,10 +17,20 @@ RUN apk add --no-cache \
 
 ARG APCU_VERSION=5.1.12
 
-RUN docker-php-ext-configure zip --with-libzip; \
+RUN apk add --no-cache \
+        icu-dev \
+        libzip-dev \
+        postgresql-dev \
+        zlib-dev \
+    ; \
+    \
+    docker-php-ext-configure zip --with-libzip; \
     docker-php-ext-install -j$(nproc) \
         intl \
         pdo_pgsql \
+        pdo_sqlite \
+        openssl \
+        mbstring \
         zip \
     ; \
     pecl install \
