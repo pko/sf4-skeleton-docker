@@ -17,6 +17,21 @@ RUN apk add --no-cache \
 
 ARG APCU_VERSION=5.1.12
 
+RUN docker-php-ext-configure zip --with-libzip; \
+    docker-php-ext-install -j$(nproc) \
+        intl \
+        pdo_pgsql \
+        zip \
+    ; \
+    pecl install \
+        apcu-${APCU_VERSION} \
+    ; \
+    pecl clear-cache; \
+    docker-php-ext-enable \
+        apcu \
+        opcache \
+    ;
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY docker/php/php.ini /usr/local/etc/php/php.ini
 
